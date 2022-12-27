@@ -1,1 +1,2 @@
-[travel app ref](https://www.youtube.com/watch?v=kgR7r-L-y34&list=PLYBvEAka-q1hhaSQZQF1-ERbMv95ACPqS)
+npx create-expo-app
+[app ref](https://www.youtube.com/watch?v=ql4J6SpLXZA)
