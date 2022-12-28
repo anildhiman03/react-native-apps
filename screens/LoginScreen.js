@@ -6,24 +6,48 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
-import { auth } from "../firebase";
+import React, { useEffect } from "react";
+import { app, auth } from "../firebase";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "@firebase/auth";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = React.useState(" ");
   const [password, setPassword] = React.useState(" ");
+  useEffect(() => {
+    const subs = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        navigation.navigate("Home");
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
+    return subs;
+  }, []);
 
   const handleSignUp = () => {
-    auth
-      .createUserWithEmailAndPassword(email, password)
+    createUserWithEmailAndPassword(auth, email, password)
       .then((res) => {
         const user = res.user;
         console.log(user);
       })
-      .catch((err) => {
-        alert(err.message);
-      });
+      .catch((err) => alert(err.message));
   };
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((res) => {
+        const user = res.user;
+        navigation.navigate("Home");
+      })
+      .catch((err) => alert(err.message));
+  };
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.inputContainer}>
@@ -42,11 +66,11 @@ const LoginScreen = () => {
         ></TextInput>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => {}} style={styles.button}>
+        <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={handleSignUp}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOnlineText}>Register</Text>
